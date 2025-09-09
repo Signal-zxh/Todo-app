@@ -25,6 +25,13 @@ def add():
     db.session.commit()
     return redirect('/')
 
+@app.route('/delete/<int:id>')
+def delete(id):
+    task_to_delete = Task.query.get_or_404(id)
+    db.session.delete(task_to_delete)
+    db.session.commit()
+    return redirect('/')
+
 with app.app_context():
     db.create_all()
 
