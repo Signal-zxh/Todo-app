@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do List</title>
+</head>
+<body>
+    <h1>My To-Do List</h1>
+    <p>这是一个待办事项列表。</p>
+    <form action="/add" method="POST">
+        <input type="text" name="content" placeholder="输入新任务……">
+        <button type="submit">添加</button>
+    </form>
+    <ul>
+        {% for task in tasks %}
+            <li>{{ task.content }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

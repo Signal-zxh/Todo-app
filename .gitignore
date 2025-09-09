@@ -1,0 +1,7 @@
+venv/
+
+instance/
+todo.db
+
+__pycache__/
+*.py[cod]
