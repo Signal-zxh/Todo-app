@@ -18,5 +18,14 @@
             </li>
         {% endfor %}
     </ul>
+    <script>
+        document.querySelectorAll('a[href^="/delete/"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (!confirm('确定要删除这个任务吗？')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
