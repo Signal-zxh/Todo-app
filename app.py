@@ -32,6 +32,13 @@ def delete(id):
     db.session.commit()
     return redirect('/')
 
+@app.route('/toggle/<int:id>')
+def toggle(id):
+    task=Task.query.get_or_404(id)
+    task.done = not task.done
+    db.session.commit()
+    return redirect('/')
+
 with app.app_context():
     db.create_all()
 

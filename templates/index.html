@@ -12,12 +12,20 @@
     </form>
     <ul>
         {% for task in tasks %}
-            <li>
+            <li class="{% if task.done %}done{% endif %}">
+                <a href="/toggle/{{ task.id }}" style="text-decoration: none;color:inherit;">
                 {{ task.content }}
+                </a>
                 <a href="/delete/{{task.id}}" style="color:red;margin-left:10px;">✗</a>
             </li>
         {% endfor %}
     </ul>
+    <style>
+        .done{
+            text-decoration: line-through;
+            color:#888;
+        }
+    </style>
     <script>
         document.querySelectorAll('a[href^="/delete/"]').forEach(link => {
             link.addEventListener('click', function(e) {
