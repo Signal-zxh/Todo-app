@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}To-Do List{% endblock %}</title>
+</head>
+<body>
+    <div>
+        {% if current_user.is_authenticated %}
+          欢迎，{{ current_user.username }}!
+          <a href="{{ url_for('logout') }}">退出</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">登录</a>
+          <a href="{{ url_for('register') }}">注册</a>
+        {% endif %}
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>
