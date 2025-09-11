@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '981008'
@@ -18,6 +19,8 @@ login_manager.init_app(app)
 login_manager.login_view='login'
 
 db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
 
 #Task model
 class Task(db.Model):
