@@ -67,6 +67,7 @@ def add():
     return redirect('/')
 
 @app.route('/delete/<int:id>')
+@login_required
 def delete(id):
     task_to_delete = Task.query.get_or_404(id)
     db.session.delete(task_to_delete)
@@ -74,6 +75,7 @@ def delete(id):
     return redirect('/')
 
 @app.route('/toggle/<int:id>')
+@login_required
 def toggle(id):
     task=Task.query.get_or_404(id)
     task.done = not task.done

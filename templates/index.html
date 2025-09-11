@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>To-Do List</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     <h1>My To-Do List</h1>
     <p>这是一个待办事项列表。</p>
     <form action="/add" method="POST">
@@ -20,12 +17,17 @@
             </li>
         {% endfor %}
     </ul>
+{% endblock %}
+
+{% block styles %}
     <style>
         .done{
             text-decoration: line-through;
             color:#888;
         }
     </style>
+{% endblock %}
+{% block scripts %}
     <script>
         document.querySelectorAll('a[href^="/delete/"]').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -35,5 +37,4 @@
             });
         });
     </script>
-</body>
-</html>
+{% endblock %}

@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>{% block title %}To-Do List{% endblock %}</title>
-</head>
+    {% block styles %}{% endblock %}
+  </head>
 <body>
     <div>
         {% if current_user.is_authenticated %}
@@ -14,5 +15,7 @@
         {% endif %}
     </div>
     {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>
