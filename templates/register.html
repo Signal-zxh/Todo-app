@@ -2,6 +2,10 @@
 
 {% block content %}
 <h2>注册</h2>
+<!-- 新增错误显示 -->
+{% for error in form.username.errors %}
+    <div style="color: red;">{{ error }}</div>
+{% endfor %}
 <form method="POST">
     {{ form.hidden_tag() }}
     <p>

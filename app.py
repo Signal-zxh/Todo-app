@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin,LoginManager,login_user,login_required,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length
 from flask_migrate import Migrate
 
@@ -47,9 +47,19 @@ class LoginForm(FlaskForm):
     submit = SubmitField('登录')
 
 class RegisterForm(FlaskForm):
-    username = StringField('用户名', validators=[DataRequired(), Length(min=4, max=20)])
-    password = PasswordField('密码', validators=[DataRequired(), Length(min=6)])
+    username = StringField('用户名', validators=[
+        DataRequired(),
+        Length(min=4, max=20)
+    ])
+    password = PasswordField('密码', validators=[
+        DataRequired(),
+        Length(min=6)
+    ])
     submit = SubmitField('注册')
+    #自定义验证重名方法
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('用户名已被占用')
 
 @app.route('/')
 @login_required
@@ -90,10 +100,18 @@ def load_user(user_id):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        #检查用户名是否已经存在（双重验证）
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('用户名已存在')
+            return redirect(url_for('register'))
+        #创建新用户
         user = User(username=form.username.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+
+        flash('注册成功！请登录')
         return redirect(url_for('login'))
     return render_template('register.html',form=form)
 
