@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin,LoginManager,login_user,login_required,logout_user,current_user
@@ -7,11 +9,23 @@ from wtforms import StringField, PasswordField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length
 from flask_migrate import Migrate
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '981008'
-#set database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_mapping(
+    SECRET_KEY=os.environ.get('SECRET_KEY', '981008'),
+    SQLALCHEMY_DATABASE_URI=os.environ.get(
+        'DATABASE_URL',
+        f"sqlite:///{os.path.join(app.instance_path, 'todo.db')}"
+    ),
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+)
+app.config.from_pyfile('config.py', silent=True)
+
+# normalize relative SQLite path to absolute path for Flask-SQLAlchemy
+db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', '')
+if db_uri.startswith('sqlite:///') and not db_uri.startswith('sqlite:////'):
+    db_path = db_uri.replace('sqlite:///', '', 1)
+    if not os.path.isabs(db_path):
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.abspath(db_path)}"
 
 #initializate Flask-Login
 login_manager=LoginManager()
@@ -117,6 +131,9 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -130,7 +147,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 with app.app_context():
     db.create_all()

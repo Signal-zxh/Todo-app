@@ -1,6 +1,8 @@
 venv/
 
-instance/
+# keep the instance folder but ignore runtime config and DB files
+instance/config.py
+instance/todo.db
 
 __pycache__/
 

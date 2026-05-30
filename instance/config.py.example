@@ -1,0 +1,5 @@
+# Example instance configuration for the Todo App.
+# Copy this file to instance/config.py and customize values as needed.
+
+SECRET_KEY = 'replace-this-with-a-secret-key'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/todo.db'
